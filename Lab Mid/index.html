@@ -1,0 +1,818 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Typing Challenge Game</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    :root {
+      --navy: #1d2d50;
+      --indigo: #4361ee;
+      --violet: #7209b7;
+      --pink: #f72585;
+      --teal: #06d6a0;
+      --teal-dark: #118ab2;
+      --amber: #ffb703;
+      --red: #ef476f;
+    }
+
+    body {
+      background: linear-gradient(180deg, #eef1ff, #fdf0f5);
+      font-family: 'Segoe UI', Arial, sans-serif;
+      color: var(--navy)
+    }
+
+    .hero {
+      background: linear-gradient(135deg, var(--indigo), var(--violet), var(--pink));
+      color: #fff;
+      border-radius: 20px;
+      box-shadow: 0 10px 30px rgba(114, 9, 183, .35)
+    }
+
+    .card {
+      border: none;
+      border-radius: 18px
+    }
+
+    #home>.card {
+      background: linear-gradient(135deg, #eef1ff, #f3e8ff, #fdf0f5)
+    }
+
+    .mode-card {
+      border-radius: 20px;
+      box-shadow: 0 8px 24px rgba(29, 45, 80, .12)
+    }
+
+    .mode-card:hover {
+      transform: translateY(-3px)
+    }
+
+    .mode-card.bubbles {
+      background: linear-gradient(180deg, #dbe4ff, #eef1ff);
+      border-top: 8px solid var(--indigo)
+    }
+
+    .mode-card.bubbles h3 {
+      color: var(--indigo)
+    }
+
+    .mode-card.keys {
+      background: linear-gradient(180deg, #d1fae5, #eef1ff);
+      border-top: 8px solid var(--teal)
+    }
+
+    .mode-card.keys h3 {
+      color: var(--teal-dark)
+    }
+
+    .btn {
+      border-radius: 12px;
+      font-weight: 600
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--indigo), var(--violet));
+      border: none
+    }
+
+    .btn-success {
+      background: linear-gradient(135deg, var(--teal), var(--teal-dark));
+      border: none
+    }
+
+    .btn-warning {
+      background: linear-gradient(135deg, var(--amber), #fb8500);
+      border: none;
+      color: #1d2d50
+    }
+
+    .btn-secondary {
+      background: var(--navy);
+      border: none
+    }
+
+    .form-select {
+      border-radius: 12px;
+      border-color: #c7d2fe
+    }
+
+    .form-select:focus {
+      border-color: var(--indigo);
+      box-shadow: 0 0 0 3px rgba(67, 97, 238, .2)
+    }
+
+    .progress-bar {
+      background: linear-gradient(90deg, var(--indigo), var(--pink))
+    }
+
+    #bubbleArea {
+      position: relative;
+      height: 420px;
+      overflow: hidden;
+      border-radius: 20px;
+      background: linear-gradient(180deg, #dbe4ff, #ffffff);
+      border: 2px solid var(--indigo);
+      box-shadow: inset 0 0 40px rgba(67, 97, 238, .12)
+    }
+
+    .miss-line {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      border-top: 3px dashed var(--red);
+      color: var(--red);
+      font-size: 12px;
+      font-weight: bold;
+      text-align: center;
+      background: rgba(255, 255, 255, .85);
+      padding: 2px
+    }
+
+    .bubble {
+      position: absolute;
+      width: 62px;
+      height: 62px;
+      border-radius: 50%;
+      color: #fff;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      font-weight: bold;
+      box-shadow: 0 6px 14px rgba(29, 45, 80, .30);
+      text-shadow: 0 1px 3px rgba(0, 0, 0, .3)
+    }
+
+    .c1 {
+      background: radial-gradient(circle at 30% 30%, #8ecae6, var(--indigo) 70%)
+    }
+
+    .c2 {
+      background: radial-gradient(circle at 30% 30%, #f9a8d4, var(--violet) 70%)
+    }
+
+    .c3 {
+      background: radial-gradient(circle at 30% 30%, #99e2b4, var(--teal-dark) 70%)
+    }
+
+    .c4 {
+      background: radial-gradient(circle at 30% 30%, #ffd166, var(--pink) 70%)
+    }
+
+    .target-box {
+      width: 135px;
+      height: 135px;
+      margin: 0 auto;
+      border-radius: 50%;
+      color: #fff;
+      font-size: 72px;
+      font-weight: bold;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: radial-gradient(circle at 30% 30%, #7bf1c6, var(--teal-dark) 70%);
+      box-shadow: 0 8px 20px rgba(17, 138, 178, .4)
+    }
+
+    .key-btn {
+      min-width: 50px;
+      height: 52px;
+      font-weight: bold;
+      border-radius: 12px;
+      background: #fff;
+      border: 2px solid #c7d2fe;
+      color: var(--navy);
+      box-shadow: 0 3px 0 #c7d2fe
+    }
+
+    .key-btn:hover {
+      background: var(--indigo);
+      color: #fff;
+      border-color: var(--indigo)
+    }
+
+    .key-btn:active {
+      transform: translateY(3px);
+      box-shadow: none
+    }
+
+    .stat {
+      border-radius: 14px;
+      padding: 10px;
+      box-shadow: 0 3px 10px rgba(29, 45, 80, .10)
+    }
+
+    .stat small {
+      color: #666;
+      text-transform: uppercase;
+      letter-spacing: .5px
+    }
+
+    #game .row.text-center>div:nth-child(1) .stat {
+      background: linear-gradient(180deg, #dbe4ff, #ffffff);
+      border-top: 4px solid var(--indigo)
+    }
+
+    #game .row.text-center>div:nth-child(2) .stat {
+      background: linear-gradient(180deg, #d1fae5, #ffffff);
+      border-top: 4px solid var(--teal)
+    }
+
+    #game .row.text-center>div:nth-child(3) .stat {
+      background: linear-gradient(180deg, #ffe4ef, #ffffff);
+      border-top: 4px solid var(--pink)
+    }
+
+    #game .row.text-center>div:nth-child(4) .stat {
+      background: linear-gradient(180deg, #fff3d6, #ffffff);
+      border-top: 4px solid var(--amber)
+    }
+
+    #keyArea {
+      background: linear-gradient(180deg, #d1fae5, #fdf0f5) !important
+    }
+
+    #feedback {
+      border-radius: 12px;
+      font-weight: 600
+    }
+
+    #results {
+      background: linear-gradient(135deg, #eef1ff, #f3e8ff, #fdf0f5);
+      border-radius: 20px;
+      border-top: 6px solid var(--amber);
+      box-shadow: 0 8px 24px rgba(114, 9, 183, .20)
+    }
+
+    #results h3 {
+      color: var(--violet)
+    }
+
+    @media (max-width: 768px) {
+      .hero h1 {
+        font-size: 28px
+      }
+
+      .hero p {
+        font-size: 15px
+      }
+
+      #bubbleArea {
+        height: 340px
+      }
+
+      .bubble {
+        width: 54px;
+        height: 54px;
+        font-size: 21px
+      }
+
+      .target-box {
+        width: 110px;
+        height: 110px;
+        font-size: 58px
+      }
+
+      .key-btn {
+        min-width: 44px;
+        height: 46px
+      }
+    }
+
+    @media (max-width: 480px) {
+      .container {
+        padding-left: 12px;
+        padding-right: 12px
+      }
+
+      .hero {
+        padding: 20px 12px !important;
+        border-radius: 16px
+      }
+
+      .hero h1 {
+        font-size: 24px
+      }
+
+      #bubbleArea {
+        height: 300px;
+        border-radius: 16px
+      }
+
+      .bubble {
+        width: 48px;
+        height: 48px;
+        font-size: 19px
+      }
+
+      .miss-line {
+        font-size: 10px
+      }
+
+      .target-box {
+        width: 95px;
+        height: 95px;
+        font-size: 50px
+      }
+
+      .key-btn {
+        min-width: 38px;
+        height: 42px;
+        font-size: 14px;
+        border-radius: 10px
+      }
+
+      .stat h4 {
+        font-size: 18px
+      }
+
+      .mt-3 .btn {
+        width: 100%;
+        margin-bottom: 8px
+      }
+
+      #keyArea {
+        padding: 16px !important
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container py-4">
+    <div class="hero p-4 text-center mb-4">
+      <h1>Typing Challenge Game</h1>
+      <p class="mb-1">Test your typing speed, accuracy and keyboard skills in two fun modes.</p>
+      <span class="badge bg-light text-dark">CLO4 • HTML5 • CSS3 • JavaScript • Bootstrap</span>
+    </div>
+
+    <div id="home">
+      <div class="card p-3 mb-4 shadow-sm">
+        <div class="row">
+          <div class="col-md-6 mb-2">
+            <label class="form-label fw-bold">Difficulty Level</label>
+            <select id="difficulty" class="form-select">
+              <option value="easy">Easy — Slow, more time</option>
+              <option value="medium">Medium — Faster, less time</option>
+              <option value="hard">Hard — Fastest, least time</option>
+            </select>
+            <small class="text-muted">Difficulty changes speed, number of bubbles, targets and time limit.</small>
+          </div>
+          <div class="col-md-6 mb-2">
+            <label class="form-label fw-bold">Key Set (KeyMagnet only)</label>
+            <select id="keyset" class="form-select">
+              <option value="home">Home Row Practice — A S D F J K L</option>
+              <option value="top">Top Row — Q W E R T Y U I O P</option>
+              <option value="all">All Letters — A to Z</option>
+            </select>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-6 mb-3">
+          <div class="card mode-card bubbles h-100">
+            <div class="card-body">
+              <h3>Mode A: Bubbles</h3>
+              <p class="text-muted">Letter Recognition</p>
+              <ul>
+                <li>At least 5 bubbles rise at the same time</li>
+                <li>Press the matching letter before it crosses the red miss line</li>
+                <li>Correct = +10, Wrong key = -5, 6 misses = Game Over</li>
+                <li>Win: pop 20 (Easy) / 30 (Medium) / 40 (Hard) bubbles</li>
+                <li>Every 10 pops, bubbles get faster and one extra bubble appears</li>
+              </ul>
+              <button class="btn btn-primary w-100" onclick="startGame('bubbles')">Start Bubbles</button>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6 mb-3">
+          <div class="card mode-card keys h-100">
+            <div class="card-body">
+              <h3>Mode B: KeyMagnet</h3>
+              <p class="text-muted">Keyboard Precision</p>
+              <ul>
+                <li>One target key is shown at a time, from a real key array</li>
+                <li>Use your keyboard or tap the on-screen keys</li>
+                <li>Correct = +10, Wrong key = -5</li>
+                <li>Win: 15 targets in 60s (Easy) / 20 in 45s (Medium) / 25 in 30s (Hard), else Time Up</li>
+                <li>Correct, wrong and response time are all tracked</li>
+              </ul>
+              <button class="btn btn-success w-100" onclick="startGame('keymagnet')">Start KeyMagnet</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <p class="text-center text-muted small">Rule: Score never goes below 0. Restart and Reset work without reloading
+        the page.</p>
+    </div>
+
+    <div id="game" style="display:none">
+      <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+        <div>
+          <h2 id="modeTitle" class="mb-0"></h2>
+          <p id="modeDesc" class="text-muted mb-0"></p>
+        </div>
+        <span id="diffBadge" class="badge bg-primary fs-6"></span>
+      </div>
+      <div class="row text-center my-3 g-2">
+        <div class="col-6 col-md-3">
+          <div class="stat"><small>Score</small>
+            <h4 id="statScore">0</h4>
+          </div>
+        </div>
+        <div class="col-6 col-md-3">
+          <div class="stat"><small>Correct</small>
+            <h4 id="statCorrect">0</h4>
+          </div>
+        </div>
+        <div class="col-6 col-md-3">
+          <div class="stat"><small>Wrong</small>
+            <h4 id="statWrong">0</h4>
+          </div>
+        </div>
+        <div class="col-6 col-md-3">
+          <div class="stat"><small id="statExtraLabel">Progress</small>
+            <h4 id="statExtra">0</h4>
+          </div>
+        </div>
+      </div>
+      <div class="progress mb-3" style="height:14px">
+        <div id="progressBar" class="progress-bar progress-bar-striped progress-bar-animated" style="width:0%"></div>
+      </div>
+      <div class="alert" id="feedback" style="display:none"></div>
+      <div id="bubbleArea" style="display:none">
+        <div class="miss-line">MISS LINE — bubble yahan pahunche to miss hoga</div>
+      </div>
+      <div id="keyArea" style="display:none" class="text-center card p-4 shadow-sm">
+        <p class="fw-bold">Press this key:</p>
+        <div id="targetKey" class="target-box">A</div>
+        <div id="keyboard" class="d-flex flex-wrap justify-content-center gap-2 mt-4"></div>
+        <p class="text-muted mt-3">Real keyboard bhi use kar sakte hain, ya screen par key par tap karein.</p>
+      </div>
+      <div class="mt-3">
+        <button class="btn btn-warning" onclick="restartGame()">Restart</button>
+        <button class="btn btn-secondary" onclick="resetGame()">Reset / Home</button>
+      </div>
+      <div id="results" class="card mt-3 shadow" style="display:none">
+        <div class="card-body text-center">
+          <h3 id="resultTitle">Game Over</h3>
+          <p id="resultText" class="fs-5"></p>
+          <button class="btn btn-primary" onclick="restartGame()">Play Again</button>
+          <button class="btn btn-outline-secondary" onclick="resetGame()">Back to Home</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    var DIFF = {
+      easy: { speed: 1, spawn: 1600, bubbles: 5, target: 20, time: 60, totalKeys: 15 },
+      medium: { speed: 1.7, spawn: 1200, bubbles: 6, target: 30, time: 45, totalKeys: 20 },
+      hard: { speed: 2.5, spawn: 900, bubbles: 7, target: 40, time: 30, totalKeys: 25 }
+    };
+    var KEYSETS = {
+      home: ["A", "S", "D", "F", "J", "K", "L"],
+      top: ["Q", "W", "E", "R", "T", "Y", "U", "I", "O", "P"],
+      all: ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"]
+    };
+
+    var mode = "";
+    var playing = false;
+    var score = 0;
+    var correct = 0;
+    var wrong = 0;
+    var misses = 0;
+    var popped = 0;
+    var speed = 1;
+    var bubbles = [];
+    var target = "";
+    var targetNo = 0;
+    var timeLeft = 0;
+    var times = [];
+    var targetStart = 0;
+    var moveTimer = null;
+    var spawnTimer = null;
+    var countTimer = null;
+
+    function stopTimers() {
+      clearInterval(moveTimer);
+      clearInterval(spawnTimer);
+      clearInterval(countTimer);
+    }
+
+    function showFeedback(msg, ok) {
+      var f = document.getElementById("feedback");
+      f.style.display = "block";
+      f.textContent = msg;
+      if (ok) {
+        f.className = "alert alert-success";
+      } else {
+        f.className = "alert alert-danger";
+      }
+    }
+
+    function averageTime() {
+      if (times.length == 0) {
+        return 0;
+      }
+      var sum = 0;
+      for (var i = 0; i < times.length; i++) {
+        sum = sum + times[i];
+      }
+      return Math.round(sum / times.length);
+    }
+
+    function updateStatus() {
+      var diff = document.getElementById("difficulty").value;
+      var d = DIFF[diff];
+      document.getElementById("statScore").textContent = score;
+      document.getElementById("statCorrect").textContent = correct;
+      document.getElementById("statWrong").textContent = wrong;
+      document.getElementById("diffBadge").textContent = "Difficulty: " + diff.toUpperCase();
+      if (mode == "bubbles") {
+        document.getElementById("statExtraLabel").textContent = "Misses Left";
+        document.getElementById("statExtra").textContent = (6 - misses) + " / 6";
+        document.getElementById("progressBar").style.width = (popped / d.target * 100) + "%";
+      } else {
+        document.getElementById("statExtraLabel").textContent = "Time Left";
+        document.getElementById("statExtra").textContent = timeLeft + "s, Avg " + averageTime() + "ms";
+        document.getElementById("progressBar").style.width = ((targetNo - 1) / d.totalKeys * 100) + "%";
+      }
+    }
+
+    function startGame(m) {
+      stopTimers();
+      mode = m;
+      playing = true;
+      score = 0;
+      correct = 0;
+      wrong = 0;
+      misses = 0;
+      popped = 0;
+      times = [];
+      targetNo = 0;
+      var d = DIFF[document.getElementById("difficulty").value];
+      speed = d.speed;
+      bubbles = [];
+      document.getElementById("home").style.display = "none";
+      document.getElementById("game").style.display = "block";
+      document.getElementById("results").style.display = "none";
+      document.getElementById("bubbleArea").innerHTML = '<div class="miss-line">MISS LINE — bubble yahan pahunche to miss hoga</div>';
+
+      if (m == "bubbles") {
+        document.getElementById("modeTitle").textContent = "Mode A: Bubbles";
+        document.getElementById("modeDesc").textContent = "Press the letter key before the bubble crosses the red miss line.";
+        document.getElementById("bubbleArea").style.display = "block";
+        document.getElementById("keyArea").style.display = "none";
+        for (var i = 0; i < d.bubbles; i++) {
+          addBubble();
+        }
+        spawnTimer = setInterval(addBubble, d.spawn);
+        moveTimer = setInterval(moveBubbles, 50);
+      } else {
+        document.getElementById("modeTitle").textContent = "Mode B: KeyMagnet";
+        document.getElementById("modeDesc").textContent = "Press the target key as fast as you can.";
+        document.getElementById("bubbleArea").style.display = "none";
+        document.getElementById("keyArea").style.display = "block";
+        timeLeft = d.time;
+        buildKeyboard();
+        nextTarget();
+        countTimer = setInterval(function () {
+          timeLeft = timeLeft - 1;
+          updateStatus();
+          if (timeLeft <= 0) {
+            endGame("Time Up! You ran out of time.");
+          }
+        }, 1000);
+      }
+      updateStatus();
+    }
+
+    function restartGame() {
+      if (mode != "") {
+        startGame(mode);
+      }
+    }
+
+    function resetGame() {
+      stopTimers();
+      playing = false;
+      mode = "";
+      document.getElementById("game").style.display = "none";
+      document.getElementById("home").style.display = "block";
+    }
+
+    function randomLetter() {
+      var letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+      var index = Math.floor(Math.random() * 26);
+      return letters[index];
+    }
+
+    function addBubble() {
+      if (playing == false || mode != "bubbles") {
+        return;
+      }
+      if (bubbles.length >= 9) {
+        return;
+      }
+      var area = document.getElementById("bubbleArea");
+      var el = document.createElement("div");
+      var color = 1 + Math.floor(Math.random() * 4);
+      el.className = "bubble c" + color;
+      el.textContent = randomLetter();
+      var b = {};
+      b.el = el;
+      b.letter = el.textContent;
+      b.x = Math.random() * (area.clientWidth - 70);
+      b.y = 340;
+      el.style.left = b.x + "px";
+      el.style.top = b.y + "px";
+      el.onclick = function () {
+        popBubble(b);
+      };
+      area.appendChild(el);
+      bubbles.push(b);
+    }
+
+    function moveBubbles() {
+      for (var i = bubbles.length - 1; i >= 0; i--) {
+        bubbles[i].y = bubbles[i].y - speed;
+        bubbles[i].el.style.top = bubbles[i].y + "px";
+        if (bubbles[i].y <= 20) {
+          bubbles[i].el.remove();
+          bubbles.splice(i, 1);
+          misses = misses + 1;
+          showFeedback("Miss! Bubble reached the top line.", false);
+          updateStatus();
+          if (misses >= 6) {
+            endGame("Game Over! You made 6 misses.");
+          } else {
+            var d = DIFF[document.getElementById("difficulty").value];
+            if (bubbles.length < d.bubbles) {
+              addBubble();
+            }
+          }
+        }
+      }
+    }
+
+    function popBubble(b) {
+      for (var i = 0; i < bubbles.length; i++) {
+        if (bubbles[i] == b) {
+          bubbles.splice(i, 1);
+          break;
+        }
+      }
+      b.el.remove();
+      score = score + 10;
+      popped = popped + 1;
+      correct = correct + 1;
+      showFeedback("Correct! +10", true);
+      if (popped % 10 == 0) {
+        speed = speed + 0.3;
+        if (bubbles.length < 9) {
+          addBubble();
+        }
+        showFeedback("Level up! Bubbles are now faster.", true);
+      }
+      updateStatus();
+      var d = DIFF[document.getElementById("difficulty").value];
+      if (popped >= d.target) {
+        endGame("You Win! You popped " + d.target + " bubbles.");
+      } else {
+        addBubble();
+      }
+    }
+
+    function buildKeyboard() {
+      var keys = KEYSETS[document.getElementById("keyset").value];
+      var kb = document.getElementById("keyboard");
+      kb.innerHTML = "";
+      for (var i = 0; i < keys.length; i++) {
+        var btn = document.createElement("button");
+        btn.className = "btn btn-outline-primary key-btn";
+        btn.textContent = keys[i];
+        btn.onclick = function () {
+          handleKey(this.textContent);
+        };
+        kb.appendChild(btn);
+      }
+    }
+
+    function nextTarget() {
+      var keys = KEYSETS[document.getElementById("keyset").value];
+      var d = DIFF[document.getElementById("difficulty").value];
+      targetNo = targetNo + 1;
+      if (targetNo > d.totalKeys) {
+        endGame("You Win! You finished all targets.");
+        return;
+      }
+      var index = Math.floor(Math.random() * keys.length);
+      target = keys[index];
+      document.getElementById("targetKey").textContent = target;
+      targetStart = Date.now();
+      updateStatus();
+    }
+
+    function handleKey(key) {
+      if (playing == false || mode != "keymagnet") {
+        return;
+      }
+      var buttons = document.getElementsByClassName("key-btn");
+      for (var i = 0; i < buttons.length; i++) {
+        if (buttons[i].textContent == key) {
+          if (key == target) {
+            buttons[i].className = "btn key-btn btn-success";
+          } else {
+            buttons[i].className = "btn key-btn btn-danger";
+          }
+          var btn = buttons[i];
+          setTimeout(function () {
+            btn.className = "btn btn-outline-primary key-btn";
+          }, 350);
+        }
+      }
+      var ms = Date.now() - targetStart;
+      if (key == target) {
+        score = score + 10;
+        correct = correct + 1;
+        times.push(ms);
+        showFeedback("Correct! +10 in " + ms + "ms", true);
+        nextTarget();
+      } else {
+        score = score - 5;
+        if (score < 0) {
+          score = 0;
+        }
+        wrong = wrong + 1;
+        times.push(ms);
+        showFeedback("Wrong key! -5. Target was " + target, false);
+        nextTarget();
+      }
+      updateStatus();
+    }
+
+    document.addEventListener("keydown", function (e) {
+      if (playing == false) {
+        return;
+      }
+      var key = e.key.toUpperCase();
+      if (mode == "bubbles") {
+        var found = null;
+        for (var i = 0; i < bubbles.length; i++) {
+          if (bubbles[i].letter == key) {
+            found = bubbles[i];
+            break;
+          }
+        }
+        if (found != null) {
+          popBubble(found);
+        } else if (key >= "A" && key <= "Z") {
+          score = score - 5;
+          if (score < 0) {
+            score = 0;
+          }
+          wrong = wrong + 1;
+          showFeedback("Wrong key! -5", false);
+          updateStatus();
+        }
+      } else if (mode == "keymagnet") {
+        handleKey(key);
+      }
+    });
+
+    function endGame(title) {
+      playing = false;
+      stopTimers();
+      var total = correct + wrong;
+      var acc = 0;
+      if (total > 0) {
+        acc = Math.round(correct / total * 100);
+      }
+      document.getElementById("resultTitle").textContent = title;
+      if (mode == "bubbles") {
+        document.getElementById("resultText").textContent =
+          "Score: " + score + " | Popped: " + popped + " | Misses: " + misses +
+          " | Correct: " + correct + " | Wrong: " + wrong + " | Accuracy: " + acc + "%";
+      } else {
+        var fastest = 0;
+        for (var i = 0; i < times.length; i++) {
+          if (i == 0 || times[i] < fastest) {
+            fastest = times[i];
+          }
+        }
+        document.getElementById("resultText").textContent =
+          "Score: " + score + " | Correct: " + correct + " | Wrong: " + wrong +
+          " | Accuracy: " + acc + "% | Average response time: " + averageTime() + "ms | Fastest: " + fastest + "ms";
+      }
+      document.getElementById("results").style.display = "block";
+      updateStatus();
+    }
+  </script>
+</body>
+
+</html>
